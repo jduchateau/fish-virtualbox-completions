@@ -24,6 +24,7 @@ complete -c vboxmanage -n "not __fish_seen_subcommand_from $commands" -a @ -F -d
 set -l toggle on off
 set -l directions disabled hosttoguest guesttohost bidirectional
 set -l mediums disk dvd floppy
+set -l mediumtype normal writethrough immutable shareable readonly multiattach
 set -l addremove add remove
 
 ## Commands
@@ -45,7 +46,7 @@ complete -c vboxmanage -n "__fish_seen_subcommand_from showvminfo" -l details
 complete -c vboxmanage -n "__fish_seen_subcommand_from showvminfo" -l machinereadable
 complete -c vboxmanage -n "__fish_seen_subcommand_from showvminfo" -l log --require-parameter -a "(__vbox_compl_idx)"
 
-complete -c vboxmanage -n "__fish_seen_subcommand_from showvminfo" -a "(__fish_print_VBox_vms)"
+complete -c vboxmanage -n "__fish_seen_subcommands showvminfo" -a "(__fish_print_VBox_vms)"
 
 ## registervm
 
@@ -55,92 +56,93 @@ complete -c vboxmanage -n "__fish_seen_subcommand_from registervm" -F
 ## unregistervm
 
 complete -c vboxmanage -n "not __fish_seen_subcommand_from $commands" -a unregistervm
-complete -c vboxmanage -n "__fish_seen_subcommand_from unregistervm" -a "(__fish_print_VBox_vms)"
+complete -c vboxmanage -n "__fish_seen_subcommands unregistervm" -a "(__fish_print_VBox_vms)"
 complete -c vboxmanage -n "__fish_seen_subcommand_from unregistervm" -l delete
 
 ## createvm
 
 complete -c vboxmanage -n "not __fish_seen_subcommand_from $commands" -a createvm
-complete -c vboxmanage -n "__fish_seen_subcommand_from createvm" -l name --require-parameter
-complete -c vboxmanage -n "__fish_seen_subcommand_from createvm" -l groups -a "(__fish_complete_list , __fish_print_VBox_groups)"
-complete -c vboxmanage -n "__fish_seen_subcommand_from createvm" -l ostype -a "(__fish_print_VBox_ostypes)"
+complete -c vboxmanage -n "__fish_seen_subcommand_from createvm" -l name -r
+complete -c vboxmanage -n "__fish_seen_subcommand_from createvm" -l groups -x -a "(__fish_complete_list , __fish_print_VBox_groups)"
+complete -c vboxmanage -n "__fish_seen_subcommand_from createvm" -l ostype -x -a "(__fish_print_VBox_ostypes)"
 complete -c vboxmanage -n "__fish_seen_subcommand_from createvm" -l register -d "Register the VM in addition to creating the vbox file"
 complete -c vboxmanage -n "__fish_seen_subcommand_from createvm" -l basefolder -F
-complete -c vboxmanage -n "__fish_seen_subcommand_from createvm" -l uuid -a "(__fish_print_VBox_vms)"
+complete -c vboxmanage -n "__fish_seen_subcommand_from createvm" -l uuid -x -a "(__fish_print_VBox_vms)"
 complete -c vboxmanage -n "__fish_seen_subcommand_from createvm" -l default
 
 ## modifyvm
 
 complete -c vboxmanage -n "not __fish_seen_subcommand_from $commands" -a modifyvm
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -a "(__fish_print_VBox_vms)"
+complete -c vboxmanage -n "__fish_seen_subcommands modifyvm" -a "(__fish_print_VBox_vms)"
 
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -rl name
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l groups -a "(__fish_complete_list , __fish_print_VBox_groups)"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -rl description
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l ostype -a "(__fish_print_VBox_ostypes)"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l name -r
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l groups -x -a "(__fish_complete_list , __fish_print_VBox_groups)"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l description
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l ostype -x -a "(__fish_print_VBox_ostypes)"
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l iconfile -F
-
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l memory -d "memorysize in MB"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l pagefusion -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l memory -r -d "memorysize in MB"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l pagefusion -x -a "$toggle"
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l vram -d "vramsize in MB"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l acpi -a "$toggle"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l ioapic -a "$toggle"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l hpet -a "$toggle"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l triplefaultreset -a "$toggle"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l apic -a "$toggle"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l x2apic -a "$toggle"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l paravirtprovider -a "none default legacy minimal hyperv kvm"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l paravirtdebug -r
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l hwvirtex -a "$toggle"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l nestedpaging -a "$toggle"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l largepages -a "$toggle"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l vtxvpid -a "$toggle"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l vtxux -a "$toggle"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l pae -a "$toggle"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l longmode -a "$toggle"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l ibpb-on-vm-exit -a "$toggle"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l ibpb-on-vm-entry -a "$toggle"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l spec-ctrl -a "$toggle"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l l1d-flush-on-sched -a "$toggle"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l l1d-flush-on-vm-entry -a "$toggle"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l mds-clear-on-sched -a "$toggle"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l mds-clear-on-vm-entry -a "$toggle"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l nested-hw-virt -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l acpi -x -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l ioapic -x -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l hpet -x -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l triplefaultreset -x -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l apic -x -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l x2apic -x -a "$toggle"
 
-set -l cpuprofiles host "Intel 8086" "Intel 80286" "Intel 80386"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l cpu-profile -a cpuprofiles
+set -l paravirtprovider_args none default legacy minimal hyperv kvm
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l paravirtprovider -x -a "$paravirtprovider_args"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l paravirtdebug -r
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l hwvirtex -x -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l nestedpaging -x -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l largepages -x -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l vtxvpid -x -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l vtxux -x -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l pae -x -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l longmode -x -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l ibpb-on-vm-exit -x -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l ibpb-on-vm-entry -x -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l spec-ctrl -x -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l l1d-flush-on-sched -x -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l l1d-flush-on-vm-entry -x -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l mds-clear-on-sched -x -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l mds-clear-on-vm-entry -x -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l nested-hw-virt -x -a "$toggle"
+
+set -l cpuprofiles_args host "Intel 8086" "Intel 80286" "Intel 80386"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l cpu-profile -x -a cpuprofiles_args
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l cpuid-portability-level -a "0 1 2 3"
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l cpuid-set -d "<leaf[:subleaf]> <eax> <ebx> <ecx> <edx>"
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l cpuid-remove -d"<leaf[:subleaf>"
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l cpuidremoveall
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l hardwareuuid -d uuid
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l hardwareuuid -d "UUID to present to the guest VM in memory tables (DMI/SMBIOS)"
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l cpus -d number
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l cpuhotplug -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l cpuhotplug -x -a "$toggle"
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l plugcpu -d id
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l unplugcpu -d id
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l cpuexecutioncap -d "<1-100>"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l rtcuseutc -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l rtcuseutc -x -a "$toggle"
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l graphicscontroller -a "none vboxvga vmsvga vboxsvga"
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l monitorcount -d number
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l accelerate3d -a "$toggle"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l accelerate2dvideo -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l accelerate3d -x -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l accelerate2dvideo -x -a "$toggle"
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l firmware -a"bios efi efi32 efi64"
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l chipset -a"ich9 piix3"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l bioslogofadein -a "$toggle"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l bioslogofadeout -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l bioslogofadein -x -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l bioslogofadeout -x -a "$toggle"
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l bioslogodisplaytime -d msec
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l bioslogoimagepath -d imagepath
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l biosbootmenu -a "disabled menuonly messageandmenu"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l biosapic -a "disabled apic x2apic"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l biossystemtimeoffset -d "$1"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l biospxedebug -a "$toggle"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l system-uuid-le -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l biosbootmenu -x -a "disabled menuonly messageandmenu"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l biosapic -x -a "disabled apic x2apic"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l biossystemtimeoffset -d "Time offset in milisec relative to the host system"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l biospxedebug -x -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l system-uuid-le -x -a "$toggle"
 
 set -l boottype none floppy dvd disk net
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l boot1 -a "$boottype"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l boot2 -a "$boottype"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l boot3 -a "$boottype"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l boot4 -a "$boottype"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l boot1 -x -a "$boottype"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l boot2 -x -a "$boottype"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l boot3 -x -a "$boottype"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l boot4 -x -a "$boottype"
 
 
 # FIXME indexed completion option<1-N>
@@ -148,11 +150,11 @@ complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l boot4 -a "$b
 set -l nic_args none null nat bridged intnet hostonly generic natnetwork
 set -l nictype_args Am79C970A Am79C973 Am79C960 82540EM 82543GC 82545EM virtio
 set -l nicpromisc_args deny allow-vms allow-all
-
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l nic -a "$nic_args"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l nic -x
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm; and __fish_seen_indexed_argument -l nic" -a "$nic_args"
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l nictype -a "$nictype_args"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l cableconnected -a "$toggle"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l nictrace -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l cableconnected -x -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l nictrace -x -a "$toggle"
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l nictracefile -F
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l nicproperty
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l nicspeed -d 'NIC speed in kbps'
@@ -199,40 +201,40 @@ complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l lptmode #-d"
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l guestmemoryballoon -d "balloonsize in MB"
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l vm-process-priority -a "default flat low normal high"
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l audio -a"none null oss alsa pulse"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l audioin -a "$toggle"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l audioout -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l audioin -x -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l audioout -x -a "$toggle"
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l audiocontroller -a "ac97 hda sb16"
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l audiocodec -a "stac9700 ad1980 stac9221 sb16"
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l clipboard-mode -a "$directions"
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l draganddrop -a "$directions"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l vrde -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l vrde -x -a "$toggle"
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l vrdeextpack -a default # or <name>
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l vrdeproperty -d"<name=[value]>"
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l vrdeport -d hostport
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l vrdeaddress -d hostip
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l vrdeauthtype -a "null external guest"
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l vrdeauthlibrary -a default # or <name>
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l vrdemulticon -a "$toggle"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l vrdereusecon -a "$toggle"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l vrdevideochannel -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l vrdemulticon -x -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l vrdereusecon -x -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l vrdevideochannel -x -a "$toggle"
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l vrdevideochannelquality -d percent
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l usbohci -a "$toggle"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l usbehci -a "$toggle"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l usbxhci -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l usbohci -x -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l usbehci -x -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l usbxhci -x -a "$toggle"
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l usbrename -d "<oldname> <newname>"
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l snapshotfolder -a default -F
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l teleporter -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l teleporter -x -a "$toggle"
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l teleporterport
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l teleporteraddress
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l teleporterpassword
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l teleporterpasswordfile -F -a stdin
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l tracing-enabled -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l tracing-enabled -x -a "$toggle"
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l tracing-config -d "String defining which group of trace points are enabled."
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l tracing-allow-vm-access -a "$toggle"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l usbcardreader -a "$toggle"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l autostart-enabled -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l tracing-allow-vm-access -x -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l usbcardreader -x -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l autostart-enabled -x -a "$toggle"
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l autostart-delay -d "in seconds"
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l recording -a "$toggle"
+complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l recording -x -a "$toggle"
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l recordingscreens -a all # or <screen ID>[ <screen ID>...]
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l recordingfile -F
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l recordingvideores --require-parameter -d "<width> <height>"
@@ -246,7 +248,7 @@ complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l defaultfront
 ## movevm
 
 complete -c vboxmanage -n "not __fish_seen_subcommand_from $commands" -a movevm
-complete -c vboxmanage -n "__fish_seen_subcommand_from movevm" -a "(__fish_print_VBox_vms)"
+complete -c vboxmanage -n "__fish_seen_subcommands movevm" -a "(__fish_print_VBox_vms)"
 complete -c vboxmanage -n "__fish_seen_subcommand_from movevm" -l type -a basic
 complete -c vboxmanage -n "__fish_seen_subcommand_from modifyvm" -l folder -F
 
@@ -272,23 +274,25 @@ complete -c vboxmanage -n "__fish_seen_subcommand_from startvm" -s E -l putenv -
 set -l controlvm_actions pause resume reset poweroff savestate acpipowerbutton acpisleepbutton keyboardputscancode keyboardputstring keyboardputfile setlinkstate nic nictrace nictracefile nicproperty nicpromisc natpf guestmemoryballoon usbattach usbdetach audioin audioout clipboard draganddrop vrde vrdeport vrdeproperty vrdevideochannelquality setvideomodehint setscreenlayout screenshotpng recording setcredentials teleport plugcpu unplugcpu cpuexecutioncap webcam addencpassword removeencpassword removeallencpasswords changeuartmode vm-process-priority
 
 complete -c vboxmanage -n "not __fish_seen_subcommand_from $commands" -a controlvm
-complete -c vboxmanage -n "__fish_seen_subcommand_from controlvm" -a "(__fish_print_VBox_vms)"
-complete -c vboxmanage -n "__fish_seen_subcommands controlvm *" -a "$controlvm_actions"
+complete -c vboxmanage -n "__fish_seen_subcommands controlvm" -a "(__fish_print_VBox_vms)"
+complete -c vboxmanage -n "__fish_seen_subcommands controlvm '*'" -a "$controlvm_actions"
 
 ## discardstate
 
 complete -c vboxmanage -n "not __fish_seen_subcommand_from $commands" -a discardstate
-complete -c vboxmanage -n "__fish_seen_subcommand_from discardstate" -a "(__fish_print_VBox_vms)"
+complete -c vboxmanage -n "__fish_seen_subcommands discardstate" -a "(__fish_print_VBox_vms)"
 
 ## adoptstate
 
 complete -c vboxmanage -n "not __fish_seen_subcommand_from $commands" -a adoptstate
-complete -c vboxmanage -n "__fish_seen_subcommand_from adoptstate" -a "(__fish_print_VBox_vms)"
+complete -c vboxmanage -n "__fish_seen_subcommands adoptstate" -a "(__fish_print_VBox_vms)"
+complete -c vboxmanage -n "__fish_seen_subcommands adoptstate '*'" -F
 
 ## closemedium
 
 complete -c vboxmanage -n "not __fish_seen_subcommand_from $commands" -a closemedium
-complete -c vboxmanage -n "__fish_seen_subcommand_from closemedium" -a "$mediums"
+complete -c vboxmanage -n "__fish_seen_subcommands closemedium" -a "$mediums"
+complete -c vboxmanage -n "__fish_seen_subcommands closemedium '$mediums'" -F -a "(__fish_print_VBox_mediums)"
 
 ## storageattach
 
@@ -308,37 +312,54 @@ complete -c vboxmanage -n "__fish_seen_subcommand_from bandwidthctl" -a "(__fish
 ## showmediuminfo
 
 complete -c vboxmanage -n "not __fish_seen_subcommand_from $commands" -a showmediuminfo
-complete -c vboxmanage -n "__fish_seen_subcommand_from showmediuminfo" -a "$mediums"
+complete -c vboxmanage -n "__fish_seen_subcommands showmediuminfo" -a "$mediums"
+complete -c vboxmanage -n "__fish_seen_subcommands showmediuminfo '$mediums'" -F -a "(__fish_print_VBox_mediums)"
 
 ## createmedium
 
 complete -c vboxmanage -n "not __fish_seen_subcommand_from $commands" -a createmedium
-complete -c vboxmanage -n "__fish_seen_subcommand_from createmedium" -a "$mediums"
+complete -c vboxmanage -n "__fish_seen_subcommands createmedium" -a "$mediums"
+complete -c vboxmanage -n "__fish_seen_subcommands createmedium '$mediums'" -l filename -F
 
 ##modifymedium
 
 complete -c vboxmanage -n "not __fish_seen_subcommand_from $commands" -a modifymedium
-complete -c vboxmanage -n "__fish_seen_subcommand_from modifymedium" -a "$mediums"
+complete -c vboxmanage -n "__fish_seen_subcommands modifymedium" -a "$mediums"
+complete -c vboxmanage -n "__fish_seen_subcommands modifymedium '$mediums'" -F -a "(__fish_print_VBox_mediums)"
+complete -c vboxmanage -n "__fish_seen_subcommands modifymedium '$mediums' '*'" -l type -a "$mediumtype"
 
-## closemedium
 
-complete -c vboxmanage -n "not __fish_seen_subcommand_from $commands" -a closemedium
-complete -c vboxmanage -n "__fish_seen_subcommand_from closemedium" -a "$mediums"
+## clonemedium
+
+complete -c vboxmanage -n "not __fish_seen_subcommand_from $commands" -a clonemedium
+complete -c vboxmanage -n "__fish_seen_subcommands clonemedium" -a "$mediums"
+complete -c vboxmanage -n "__fish_seen_subcommands clonemedium '$mediums'" -F -a "(__fish_print_VBox_mediums)"
+complete -c vboxmanage -n "__fish_seen_subcommands clonemedium '$mediums' '*'" -F -a "(__fish_print_VBox_mediums)"
 
 ## mediumproperty
 
+set -l mediumproperty_args set get delete
 complete -c vboxmanage -n "not __fish_seen_subcommand_from $commands" -a mediumproperty
-complete -c vboxmanage -n "__fish_seen_subcommand_from mediumproperty" -a "$mediums"
+complete -c vboxmanage -n "__fish_seen_subcommands mediumproperty" -a "$mediums"
+complete -c vboxmanage -n "__fish_seen_subcommands mediumproperty '$mediums'" -a "$mediumproperty_args"
+complete -c vboxmanage -n "__fish_seen_subcommands mediumproperty '$mediums' '$mediumproperty_args'" -F -a "(__fish_print_VBox_mediums)"
 
 ## encryptmedium
 
 complete -c vboxmanage -n "not __fish_seen_subcommand_from $commands" -a encryptmedium
-complete -c vboxmanage -n "__fish_seen_subcommand_from encryptmedium" -F
+complete -c vboxmanage -n "__fish_seen_subcommands encryptmedium" -F -a "(__fish_print_VBox_mediums)"
+complete -c vboxmanage -n "__fish_seen_subcommands encryptmedium '*'" -l newpassword -F
+complete -c vboxmanage -n "__fish_seen_subcommands encryptmedium '*'" -l oldpassword -F
+
+set -l cipherid AES-XTS128-PLAIN64 AES-XTS256-PLAIN64
+complete -c vboxmanage -n "__fish_seen_subcommands encryptmedium '*'" -l cipher -a "$cipherid"
+complete -c vboxmanage -n "__fish_seen_subcommands encryptmedium '*'" -l newpasswordid
 
 ## checkmediumpwd
 
 complete -c vboxmanage -n "not __fish_seen_subcommand_from $commands" -a checkmediumpwd
-complete -c vboxmanage -n "__fish_seen_subcommand_from checkmediumpwd" -F
+complete -c vboxmanage -n "__fish_seen_subcommands checkmediumpwd" -F -a "(__fish_print_VBox_mediums)"
+complete -c vboxmanage -n "__fish_seen_subcommands checkmediumpwd '*'" -F
 
 ## convertfromraw
 
