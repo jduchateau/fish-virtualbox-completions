@@ -7,7 +7,7 @@ Provide completions for [virtualbox cli](https://www.virtualbox.org) in [fish](h
 Install with [fisher](https://github.com/jorgebucaran/fisher) :
 
 ```fish
-fisher add jduchateau/fish-virtualbox-completions
+fisher install jduchateau/fish-virtualbox-completions
 ```
 
 Otherwise, you could merge the files in your fish directory (typically in `~/.config/fish/`).
